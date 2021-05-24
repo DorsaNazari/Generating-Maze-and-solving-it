@@ -12,7 +12,10 @@ using Matrix = std ::vector <std :: vector<int>>;
 class maze{
     public:
        Matrix create_maze(int row , int col);
-       void show();
+       void show(Matrix& a);
+       Matrix make_a_way(Matrix& a);
+       
+
 
 
 };
