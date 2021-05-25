@@ -42,13 +42,15 @@ void maze::show(Matrix& a)
         for(size_t i{0} ;i<a.size() ;i++)
     {
         for(size_t j{0};j<a[i].size();j++){
-
             // std::cout<< std::setiosflags(std::ios::left)<< std::setw(2)<< a[i][j] ;
-            if(a[i][j] == 1){
+            if(a[i][j] == 1)
+                std::cout<< "%" ;
+            if(a[i][j] == 0)   
                 std::cout<< "-" ;
+            if(a[i][j] == 5){
+                std::cout<< "$" ;
+                a[i][j] = 0;
             }
-            else    
-                std::cout<< "*" ;
 
         }
         std::cout<<std::endl;    
@@ -86,19 +88,17 @@ Matrix maze::make_a_way(Matrix& a){
             temp.push_back(1);
         } 
     }
-    for(size_t i{};i<temp.size();i++){
-        std::cout<<temp[i];
-    }
-    std::cout<<"\n";
+    // for(size_t i{};i<temp.size();i++){
+    //     std::cout<<temp[i];
+    // }
+    // std::cout<<"\n";
     int row{};
     int col{};
     for(size_t i{};i<temp.size();i++){
-        
         if(temp[i] == 0){
             // std::cout<<"down\n";
             row += 1;
             a[row][col] = 0;
-
         }
         else
         {
@@ -108,4 +108,99 @@ Matrix maze::make_a_way(Matrix& a){
         }       
     }
     return a;
+}
+
+Matrix maze::move(Matrix &a,int b){
+    //0->up  1->right  2->down  3->left   7->start
+    //start
+    if(b == 7){
+        x = 0;
+        y = 0;
+        a[x][y] = 5;
+    }
+    //up
+    if(b == 0){
+        if(x -1 > 0){
+            if( a[x -1][y] == 0 ){
+                a[x -1][y] = 5;
+                x -= 1;
+            }
+            else
+                std::cout<<"There's not a way!\n";
+        }
+        else
+            std::cout<<"out of band!\n";
+    }
+    //right
+    if(b == 1){
+        if(y +1 < static_cast<int>(a[0].size())){
+            if( a[x][y+1] == 0 ){
+                a[x][y+1] = 5;
+                y +=1;
+            }
+            else
+                std::cout<<"There's not a way!\n";
+        }
+        else
+            std::cout<<"out of band!\n";
+    }
+    //down
+    if(b == 2){
+        if(x+1 < static_cast<int>(a.size())){
+            if( a[x+1][y] == 0 ){
+                a[x+1][y] = 5;
+                x += 1;
+            }
+            else
+                std::cout<<"There's not a way!\n";
+        }
+        else
+            std::cout<<"out of band!\n";
+    }
+    //left
+    if(b == 3){
+        if(y-1 > 0){
+            if( a[x][y-1] == 0 ){
+                a[x][y-1] = 5;
+                y -= 1;
+            }
+            else    
+                std::cout<<"There's not a way!\n";
+        }
+        else
+            std::cout<<"out of band!\n";
+    }   
+    return a;
+}
+
+std::vector<int> maze::possible_moves(Matrix& a){
+    std::vector<int> dir;
+    if(a[x][y] == 0){
+        if(x -1 > 0){
+            if( a[x -1][y] == 0 )
+                dir.push_back(0);  
+        }
+        if(y +1 < static_cast<int>(a[0].size())){
+            if( a[x][y+1] == 0 )
+                dir.push_back(1);
+        }
+        if(x+1 < static_cast<int>(a.size())){
+            if( a[x+1][y] == 0 )
+                dir.push_back(2);
+        }
+        if(y-1 > 0){
+            if( a[x][y-1] == 0 )
+                dir.push_back(3);
+        }
+    }
+    else
+        std::cout<<"this cell is full!\n";
+
+    for(auto i:dir){
+        std::cout<<i<<" ";
+    }
+    std::cout<<std::endl;
+
+    
+    return dir;
 }
