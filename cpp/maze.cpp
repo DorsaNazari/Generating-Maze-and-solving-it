@@ -244,7 +244,7 @@ maze* maze::move(int b){
     return this;
 }
 
-std::vector<int> maze::possible_moves(Matrix& a){
+std::vector<int> maze::possible_moves(){
     std::vector<int> dir;
     if(a[x][y] != 1 ){
         if(x -1 > 0){
@@ -267,7 +267,7 @@ std::vector<int> maze::possible_moves(Matrix& a){
     else
         std::cout<<"this cell is full!\n";
     for(auto i:dir){
-        std::cout<<i<<" ";
+        std::cout<<"possible moves Are : "<<i<<" ";
     }
     std::cout<<std::endl;
     return dir;
@@ -289,7 +289,7 @@ std::deque<maze> maze::bfs (std::deque<maze> &mazes){
     else{
         std::cout<<"here2\n";
     //else delete first maze and move to possible cells then run bfs on elements of deque again
-        std::vector<int> v = m.possible_moves(m.a);
+        std::vector<int> v = m.possible_moves();
         for(auto j:v){
             maze n = m;
             mazes.push_back(*n.move(j));
@@ -300,30 +300,29 @@ std::deque<maze> maze::bfs (std::deque<maze> &mazes){
     return mazes;
 }
 
-// n.show();
-// std::cout<<"\n";
+std::deque<maze> maze::dfs (std::deque<maze>&mazes){
+    maze m = mazes[0];
 
-// bool maze::end (std::deque<maze*> d){
-//     std::cout<<"im in the end\n";
-//     int row{};
-//     int col{};
-//     int k{};
-//     for(auto i:d){
-//         std::cout<<"im in the end\n";
-//         row = i->a.size() -1;
-//         col =static_cast<int>( i->a[0].size())-1;
-//         std::cout<<"row "<<i->a.size()<<" col "<<col<<"\n";
-//         i->show(i->a);
-//         if( i->a[static_cast<int> (row)][static_cast<int>(col)] == 5 ){
-//         std::cout<<"im in the end\n";
-//         k+=1;
-//         return true;
-//         }
-//         else
-//         return false;
-//     }
-//     return k;
-// }
+    if(m.a[a.size()-1][a[0].size()-1] == 5){
+        std::cout<<"solution is found\n";
+        m.show();
+        return mazes;
+    }
+    else{
+        std::vector<int> v = m.possible_moves();
+        for(auto j:v){
+            maze n = m;
+            mazes.push_back(*n.move(j));
+            mazes.pop_front();
+            std::deque<maze> k = n.dfs(mazes);
+            if(k[0].a[a.size()-1][a[0].size()-1] == 5){
+                return k;
+            }
+        }
+    }
+    return mazes;
+}
+
 
         // std::cout<<"now :\n";
         // i->show(i->a);
