@@ -3,6 +3,7 @@
 #include<vector>
 #include <time.h>
 #include<iomanip>
+#include <deque>
 // #include <list>
 // #include <initializer_list>
 // #include<algorithm> 
@@ -12,7 +13,12 @@
 
 using Matrix = std ::vector <std :: vector<int>>;
 
-Matrix maze::create_maze(int row , int col){
+// maze::maze(maze& m){
+//     for(auto i:m){
+//     }
+// }
+
+maze* maze::create_maze(int row , int col){
     Matrix b;
     // std::vector<int> vect(col, 1);
     // b.push_back(vect);
@@ -32,24 +38,24 @@ Matrix maze::create_maze(int row , int col){
     // b.push_back(vect);
     // b[1][1] = 0;
     // b[row-2][col-2] = 0;
-    b[0][0] = 0;
+    b[0][0] = 5;
     b[row-1][col-1] = 0;
-    return b;
+    a = b;
+    return this;
 }
 
-void maze::show(Matrix& a)
+void maze::show()
 {
         for(size_t i{0} ;i<a.size() ;i++)
     {
         for(size_t j{0};j<a[i].size();j++){
             // std::cout<< std::setiosflags(std::ios::left)<< std::setw(2)<< a[i][j] ;
             if(a[i][j] == 1)
-                std::cout<< "%" ;
+                std::cout<< "#" ;
             if(a[i][j] == 0)   
                 std::cout<< "-" ;
             if(a[i][j] == 5){
                 std::cout<< "$" ;
-                a[i][j] = 0;
             }
 
         }
@@ -57,7 +63,75 @@ void maze::show(Matrix& a)
     }
 }
 
-Matrix maze::make_a_way(Matrix& a){
+// maze* maze::create_maze(int row , int col){
+//     Matrix b;
+//     // std::vector<int> vect(col, 1);
+//     // b.push_back(vect);
+//     srand( (unsigned)time(NULL) ); //Randomize seed initialization
+//     // for(int i{0} ;i<row-2 ;i++)
+//     for(int i{0} ;i<row ;i++)
+//     {
+//         std :: vector <int> temp;
+//         for(int j{0};j<col;j++){
+// 	        int randNum = rand() % 2; // Generate a random number between 0 and 1
+//             temp.push_back(randNum);
+//             // temp[0] = 1;
+//             // temp[col-1] = 1;
+//     }
+//         b.push_back(temp);
+//     }   
+//     // b.push_back(vect);
+//     // b[1][1] = 0;
+//     // b[row-2][col-2] = 0;
+//     b[0][0] = 0;
+//     b[row-1][col-1] = 0;
+//     size_t down = 0;
+//     size_t right = 0;
+//     std :: vector <int> tempe;
+//     while (down < b.size()-1 && right < b[0].size()-1)
+//     {
+//         int randNum1 = rand() % 2;
+//         if( randNum1 == 0 ){
+//             down += 1;
+//             tempe.push_back(randNum1);
+//         }
+//         else{
+//             right += 1;
+//             tempe.push_back(randNum1);
+//         }
+//     }
+//     if(down < b.size()-1){
+//         while (down < b.size()-1)
+//         {
+//             down += 1;
+//             tempe.push_back(0);
+//         } 
+//     }
+//     if(right < b[0].size()-1){
+//         while (right < b[0].size()-1)
+//         {
+//             right += 1;
+//             tempe.push_back(1);
+//         } 
+//     }
+//     int row1{};
+//     int col1{};
+//     for(size_t i{};i<tempe.size();i++){
+//         if(tempe[i] == 0){
+//             // std::cout<<"down\n";
+//             b[row1 +1][col1] = 0;
+//         }
+//         else
+//         {
+//             // std::cout<<"right\n";
+//             b[row1][col1+1] = 0; 
+//         }       
+//     }
+//     a = b;
+//     return this;
+// }
+
+maze* maze::make_a_way(){
     srand( (unsigned)time(NULL) );
     size_t down = 0;
     size_t right = 0;
@@ -88,10 +162,6 @@ Matrix maze::make_a_way(Matrix& a){
             temp.push_back(1);
         } 
     }
-    // for(size_t i{};i<temp.size();i++){
-    //     std::cout<<temp[i];
-    // }
-    // std::cout<<"\n";
     int row{};
     int col{};
     for(size_t i{};i<temp.size();i++){
@@ -107,12 +177,13 @@ Matrix maze::make_a_way(Matrix& a){
             a[row][col] = 0; 
         }       
     }
-    return a;
+    return this;
 }
 
-Matrix maze::move(Matrix &a,int b){
+maze* maze::move(int b){
     //0->up  1->right  2->down  3->left   7->start
     //start
+    // a[x][y] = 0;
     if(b == 7){
         x = 0;
         y = 0;
@@ -170,12 +241,12 @@ Matrix maze::move(Matrix &a,int b){
         else
             std::cout<<"out of band!\n";
     }   
-    return a;
+    return this;
 }
 
 std::vector<int> maze::possible_moves(Matrix& a){
     std::vector<int> dir;
-    if(a[x][y] == 0){
+    if(a[x][y] != 1 ){
         if(x -1 > 0){
             if( a[x -1][y] == 0 )
                 dir.push_back(0);  
@@ -195,12 +266,65 @@ std::vector<int> maze::possible_moves(Matrix& a){
     }
     else
         std::cout<<"this cell is full!\n";
-
     for(auto i:dir){
         std::cout<<i<<" ";
     }
     std::cout<<std::endl;
-
-    
     return dir;
 }
+
+std::deque<maze> maze::bfs (std::deque<maze> &mazes){
+    //make a deque
+    if(mazes.size()==0){
+        std::cout<<"no way\n";
+        return mazes;
+    }
+    maze m = mazes[0];
+    //if its end return the deque
+    if(m.a[a.size()-1][a[0].size()-1] == 5){
+        std::cout<<"solution is found\n";
+        m.show();
+        return mazes;
+    }
+    else{
+        std::cout<<"here2\n";
+    //else delete first maze and move to possible cells then run bfs on elements of deque again
+        std::vector<int> v = m.possible_moves(m.a);
+        for(auto j:v){
+            maze n = m;
+            mazes.push_back(*n.move(j));
+        }
+        mazes.pop_front();
+        m.bfs(mazes);
+    }
+    return mazes;
+}
+
+// n.show();
+// std::cout<<"\n";
+
+// bool maze::end (std::deque<maze*> d){
+//     std::cout<<"im in the end\n";
+//     int row{};
+//     int col{};
+//     int k{};
+//     for(auto i:d){
+//         std::cout<<"im in the end\n";
+//         row = i->a.size() -1;
+//         col =static_cast<int>( i->a[0].size())-1;
+//         std::cout<<"row "<<i->a.size()<<" col "<<col<<"\n";
+//         i->show(i->a);
+//         if( i->a[static_cast<int> (row)][static_cast<int>(col)] == 5 ){
+//         std::cout<<"im in the end\n";
+//         k+=1;
+//         return true;
+//         }
+//         else
+//         return false;
+//     }
+//     return k;
+// }
+
+        // std::cout<<"now :\n";
+        // i->show(i->a);
+        // std::cout<<"\n";
