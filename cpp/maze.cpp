@@ -55,7 +55,8 @@ void maze::show()
             if(a[i][j] == 0)   
                 std::cout<< "-" ;
             if(a[i][j] == 5){
-                std::cout<< "$" ;
+                std::cout<< "\u001b[31m$" ;
+                std::cout<<"\u001b[0m";
             }
 
         }
@@ -302,10 +303,15 @@ std::deque<maze> maze::bfs (std::deque<maze> &mazes){
 
 std::deque<maze> maze::dfs (std::deque<maze>&mazes){
     maze m = mazes[0];
-
+    static int depth{};
+    // std::cout<<depth<<"\n";
     if(m.a[a.size()-1][a[0].size()-1] == 5){
         std::cout<<"solution is found\n";
         m.show();
+        return mazes;
+    }
+    if(depth > 50){
+        std::cout<<"answer not found!\n";
         return mazes;
     }
     else{
@@ -313,8 +319,10 @@ std::deque<maze> maze::dfs (std::deque<maze>&mazes){
         for(auto j:v){
             maze n = m;
             mazes.push_back(*n.move(j));
+            depth += 1;
             mazes.pop_front();
             std::deque<maze> k = n.dfs(mazes);
+            depth -= 1;
             if(k[0].a[a.size()-1][a[0].size()-1] == 5){
                 return k;
             }
