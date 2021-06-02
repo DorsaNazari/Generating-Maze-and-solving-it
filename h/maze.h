@@ -21,7 +21,7 @@ class maze{
         maze* move(int b);
         bool end (std::deque<maze*> d);
         std::vector<int> possible_moves();
-        std::deque<maze> bfs ();
+        std::deque<maze> bfs (std::deque<maze> mazes);
         bool visited (std::vector<int> k);
         std::deque<maze> dfs (std::deque<maze>&mazes);
         Matrix a{};
