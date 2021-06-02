@@ -16,13 +16,17 @@ class maze{
         // maze(maze&);
         maze* create_maze(int row , int col);
         void show();
+        void show2();
         maze* make_a_way();
         maze* move(int b);
         bool end (std::deque<maze*> d);
         std::vector<int> possible_moves();
-        std::deque<maze> bfs (std::deque<maze> &mazes);
+        std::deque<maze> bfs ();
+        bool visited (std::vector<int> k);
         std::deque<maze> dfs (std::deque<maze>&mazes);
         Matrix a{};
+
+        // static Matrix visitedd;
         std::deque<maze> create_deque (){return std::deque<maze> {*this};} ;
         int x{};
         int y{};
