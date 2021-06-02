@@ -274,19 +274,14 @@ std::vector<int> maze::possible_moves(){
     else
         std::cout<<"this cell is full!\n";
     // for(auto i:dir){
-    //     std::cout<<"possible moves : "<<i<<" ";
+    //     std::cout<<"dir : "<<i<<" ";
     // }
     // std::cout<<std::endl;
     return dir;
 }
 
-std::deque<maze> maze::bfs (){
-    // std::cout<<"here \n";
-    //make a deque
-    static std::deque<maze> mazes{*this};
-
+std::deque<maze> maze::bfs (std::deque<maze> mazes){
     if(mazes.size()==0){
-
         std::cout<<"no way\n";
         return mazes;
     }
@@ -294,41 +289,35 @@ std::deque<maze> maze::bfs (){
     //if its end return the deque
     if(m.a[a.size()-1][a[0].size()-1] == 5){
         std::cout<<"solution is found\n";
-        m.show();
+        m.show2();
         return mazes;
     }
     else{
     //else delete first maze and move to possible cells then run bfs on elements of deque again
         std::vector<int> v = m.possible_moves();
-        std::vector<int> l{};
         for(auto j:v){
-            std::cout << "here " << j << std::endl;
+            std::vector<int> l{};
             maze n = m;
             n.move(j);
-            n.show();
             l.push_back(n.x);
             l.push_back(n.y);
-            if(!(n.visited(l))){
+            if(!(visited(l)))
                 mazes.push_back(n);
-                // n.visitedd.push_back(l);
-                // visitedd.push_back(l);
-                // std::cout<<"now "<<n.x<<n.y<<" "<<a[x][y] <<"\n";
-                }
         }
         mazes.pop_front();
-        m.bfs();
+        m.bfs(mazes);
     }
     return mazes;
 }
 
 bool maze::visited (std::vector<int> k){
     static Matrix visitedd;
-    std::cout << "visited: \n";
-    std::cout << k[0] << k[1]<<"\n";
-    for(size_t h{};h<visitedd.size();h++){
-        std::cout<<"(" << visitedd[h][0]<<", "<<visitedd[h][1]<<"), ";
-    }
-    std::cout << std::endl;
+    // std::cout << "visited: \n";
+    // std::cout << k[0] << k[1]<<"\n";
+    // for(size_t h{};h<visitedd.size();h++){
+    //     std::cout<<"(" << visitedd[h][0]<<", "<<visitedd[h][1]<<"), ";
+    // }
+    // std::cout << std::endl;
     bool is_visited = false;
     for(auto i:visitedd){
         if(i[0] == k[0] && i[1] == k[1]){
@@ -337,7 +326,7 @@ bool maze::visited (std::vector<int> k){
     }
     if (!is_visited)
         visitedd.push_back(k);
-    std::cout << is_visited << std::endl;
+    // std::cout << is_visited << std::endl;
     return is_visited;
 }
 
@@ -369,8 +358,3 @@ std::deque<maze> maze::dfs (std::deque<maze>&mazes){
     }
     return mazes;
 }
-
-
-        // std::cout<<"now :\n";
-        // i->show(i->a);
-        // std::cout<<"\n";
